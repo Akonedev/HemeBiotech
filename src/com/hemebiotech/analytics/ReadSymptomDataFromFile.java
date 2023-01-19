@@ -5,30 +5,34 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileWriter;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * Simple brute force implementation
- *
+ * Class That Implements then Interface ISymptomReader
+ *@author AKONE
  */
 public class ReadSymptomDataFromFile implements ISymptomReader {
 
-	private String filepath;
-	
 	/**
-	 * 
-	 * @param filepath a full or partial path to file with symptom strings in it, one per line
+	 * add symptoms in a list from a file
+	 *
+	 * @param fileName
+	 *
+	 * @return list of symptoms
+	 *
+	 * @author AKONE
 	 */
-	public ReadSymptomDataFromFile (String filepath) {
-		this.filepath = filepath;
-	}
 	
 	@Override
-	public List<String> GetSymptoms() {
+	public List<String> GetSymptoms(String fileName) {
 		ArrayList<String> result = new ArrayList<String>();
 		
-		if (filepath != null) {
+		if (fileName != null) {
 			try {
-				BufferedReader reader = new BufferedReader (new FileReader(filepath));
+				BufferedReader reader = new BufferedReader (new FileReader(fileName));
 				String line = reader.readLine();
 				
 				while (line != null) {
@@ -43,5 +47,64 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 		
 		return result;
 	}
+
+	/**
+	 * Count occurrences of symptoms from a list of symptoms
+	 *
+	 * @param symptoms
+	 *
+	 * @return map of iteration of symptoms with their number of symptoms
+	 *
+	 * @author AKONE
+	 */
+	@Override
+	public Map<String, Integer> getOccurrences(List<String> symptoms) {
+
+		Map<String, Integer> map = new TreeMap<>();
+
+		if (symptoms != null && !symptoms.isEmpty()) {
+			Collections.sort(symptoms);
+
+			for (String symptom : symptoms) {
+				map.put(symptom, map.containsKey(symptom) ? map.get(symptom) + 1 : 1);
+			}
+
+		}
+		return map;
+
+	}
+
+	/**
+	 * write result to the output file,  from a map of symptoms
+	 *
+	 * @param mapSymptomsOccurrences and resultOutFile
+	 *
+	 * @return file with number of iteration of each symptom from the map in param
+	 *
+	 * @author AKONE
+	 */
+	@Override
+	public void writeToFile(Map<String, Integer> mapSymptomsOccurrences, String resultOutFile) throws IOException {
+
+		FileWriter writer = new FileWriter(resultOutFile);
+		if (mapSymptomsOccurrences != null && !mapSymptomsOccurrences.isEmpty()) {
+			mapSymptomsOccurrences.forEach((k, v) -> {
+				try {
+					writer.write(k + "=" + v);
+					writer.write(System.getProperty("line.separator"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+			writer.close();
+
+		} else {
+			writer.write("aucun symptome n'a été trouvé");
+			writer.close();
+		}
+		System.out.println("le fichier de sortie se trouve: " + resultOutFile);
+	}
+
 
 }

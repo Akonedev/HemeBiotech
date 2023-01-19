@@ -1,6 +1,8 @@
 package com.hemebiotech.analytics;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Anything that will read symptom data from a source
@@ -12,9 +14,39 @@ import java.util.List;
  */
 public interface ISymptomReader {
 	/**
-	 * If no data is available, return an empty List
-	 * 
-	 * @return a raw listing of all Symptoms obtained from a data source, duplicates are possible/probable
+	 * add symptoms in a list from a file
+	 *
+	 * @param fileName
+	 *
+	 * @return  a raw listing of all Symptoms obtained from a data source, duplicates are possible/probable
+	 *
+	 * @author AKONE
 	 */
-	List<String> GetSymptoms ();
+	List<String> GetSymptoms(String fileName);
+
+	/**
+	 * Count occurrences of symptoms from a list of symptoms
+	 *
+	 * @param symptoms
+	 *
+	 * @return map of iteration of symptoms with their number of symptoms
+	 *
+	 * @author AKONE
+	 */
+	public Map<String, Integer> getOccurrences(List<String> symptoms);
+
+	/**
+	 * write result to the output file,  from a map of symptoms
+	 *
+	 * @param mapSymptomsOccurrences and resultOutFile
+	 *
+	 * @return file with number of iteration of each symptom from the map in param
+	 *
+	 * @author AKONE
+	 */
+	void writeToFile(Map<String, Integer> mapSymptomsOccurrences, String resultOutFile) throws IOException;
+
+
+
+	;
 }

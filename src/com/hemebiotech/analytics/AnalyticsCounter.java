@@ -1,42 +1,52 @@
 package com.hemebiotech.analytics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.util.List;
+import java.util.Map;
+
 
 public class AnalyticsCounter {
-	private static int headacheCount = 0;	// initialize to 0
-	private static int rashCount = 0;		// initialize to 0
-	private static int pupilCount = 0;		// initialize to 0
-	
-	public static void main(String args[]) throws Exception {
-		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader("symptoms.txt"));
-		String line = reader.readLine();
 
-		int i = 0;	// set i to 0
-		while (line != null) {
-			i++;	// increment i
-			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headacheCount++;
-				System.out.println("number of headaches: " + headacheCount);
-			}
-			else if (line.equals("rash")) {
-				rashCount++;
-			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
-			}
-
-			line = reader.readLine();	// get another symptom
-		}
-		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
-		writer.close();
+	ReadSymptomDataFromFile readFromFile = new ReadSymptomDataFromFile();
+	/**
+	 * 1 - read symptoms from a file
+	 * 2 - create a list of symptoms
+	 * 3- Returns a List of symptoms
+	 *
+	 * @param file
+	 *
+	 * @return list of symptoms
+	 *
+	 * @author AKONE
+	 */
+	public List<String> readFile(String file) {
+		return readFromFile.GetSymptoms(file);
 	}
+	/**
+	 * 1 - Count occurrences of symptoms in a list
+	 * 2 - Count create a map of symptoms
+	 * 3 - Return a Map of symptoms
+	 *
+	 * @param symptoms
+	 *
+	 * @return map of iteration of symptoms with their occurrences
+	 *
+	 * @author AKONE
+	 */
+	public Map<String, Integer> countOccurrence(List<String> symptoms){
+		return readFromFile.getOccurrences(symptoms);
+	}
+
+	/**
+	 * Save the result to the output file , from a map of symptoms
+	 *
+	 * @param mapOccurrences  :  symptoms and their occurrences
+	 *
+	 * @return file with number of iteration of each symptom from the map in param
+	 *
+	 * @author A.KONE
+	 */
+	public void writeResultToFile(Map<String, Integer> mapOccurrences, String resultOutFile) throws Exception {
+		readFromFile.writeToFile(mapOccurrences, resultOutFile);
+	}
+
 }
